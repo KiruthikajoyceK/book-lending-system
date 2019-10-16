@@ -1,0 +1,12 @@
+package com.hcl.booklendingsystem.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class LoginResponse {
+  private Integer statusCode;
+  private String message;
+  private Integer userId;
+}
