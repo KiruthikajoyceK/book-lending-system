@@ -1,5 +1,6 @@
 package com.hcl.booklendingsystem.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -11,10 +12,13 @@ import com.hcl.booklendingsystem.dto.BookRequestDetails;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.entity.Author;
 import com.hcl.booklendingsystem.entity.Book;
+import com.hcl.booklendingsystem.entity.BookRequest;
 import com.hcl.booklendingsystem.entity.User;
+import com.hcl.booklendingsystem.exception.BookNotFoundException;
 import com.hcl.booklendingsystem.exception.UserNotFoundException;
 import com.hcl.booklendingsystem.repository.AuthorRepository;
 import com.hcl.booklendingsystem.repository.BookRepository;
+import com.hcl.booklendingsystem.repository.BookRequestRepository;
 import com.hcl.booklendingsystem.repository.UserRepository;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
 
@@ -37,6 +41,9 @@ public class BookServiceImpl implements BookService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	BookRequestRepository bookRequestRepository;
 
 	Author author;
 	Book book;
@@ -82,6 +89,30 @@ public class BookServiceImpl implements BookService {
 		commonResponse = new CommonResponse();
 
 		return commonResponse;
+	}
+
+	/**
+	 * This method will accept bookId and userId and throw BookNotFound exception if the book is not exist
+	 * and throw UserNotfound exception if user is not present,else save bookRequest object in respective table
+	 * by calling save method in userRepository.
+	 * @param bookId
+	 * @param userId
+	 * @return Optional<BookRequest> 
+	 */
+	@Override
+	public Optional<BookRequest> requestBook(Integer bookId, Integer userId) {
+		Optional<Book> bookOptional=bookRepository.findById(bookId);
+		if(!bookOptional.isPresent())
+			throw new BookNotFoundException(BookLendingSystemConstants.BOOK_NOT_FOUND_EXCEPTION);
+		Optional<User>userOptional=userRepository.findById(userId);
+		if(!userOptional.isPresent())
+			throw new UserNotFoundException(BookLendingSystemConstants.USER_NOT_FOUND);
+		BookRequest bookRequest=new BookRequest();
+		bookRequest.setBookId(bookId);
+		bookRequest.setUserId(userId);
+		bookRequest.setBookRequestDate(LocalDateTime.now());
+		bookRequest=bookRequestRepository.save(bookRequest);
+		return Optional.of(bookRequest);
 	}
 
 }

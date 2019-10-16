@@ -17,7 +17,7 @@ import org.springframework.validation.FieldError;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
-import com.hcl.booklendingsystem.exception.BindException;
+import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.UserService;
 import com.hcl.booklendingsystem.validator.UserRequestValidator;
 
@@ -54,7 +54,7 @@ public class UserControllerTest {
        ResponseEntity<CommonResponse> commonResponse=userController.save(userRequest, bindingResult);
        assertNotNull(commonResponse);
     }
-    @Test(expected=BindException.class)
+    @Test(expected=UserException.class)
     public void testSaveBindException() {
  	   Mockito.when(bindingResult.hasErrors()).thenReturn(true);
 	   Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);

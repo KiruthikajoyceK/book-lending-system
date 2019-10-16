@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hcl.booklendingsystem.dto.LoginRequest;
 import com.hcl.booklendingsystem.dto.LoginResponse;
 import com.hcl.booklendingsystem.entity.User;
-import com.hcl.booklendingsystem.exception.BindException;
+import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.exception.UserNotFoundException;
 import com.hcl.booklendingsystem.service.LoginService;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
@@ -38,7 +38,7 @@ public class LoginController {
     	 log.debug(BookLendingSystemConstants.LOGIN_DEBUG_END_CONTROLLER);
     	 LoginResponse loginResponse=new LoginResponse();
         if (bindingResult.hasErrors()) {
-        	throw new BindException(bindingResult.getFieldError().getField()+" "+bindingResult.getFieldError().getDefaultMessage());
+        	throw new UserException(bindingResult.getFieldError().getField()+" "+bindingResult.getFieldError().getDefaultMessage());
         }
         Optional<User> optionalUser=loginService.getUerByUsernameAndPassword(loginRequest);
         if(optionalUser.isPresent()) {
