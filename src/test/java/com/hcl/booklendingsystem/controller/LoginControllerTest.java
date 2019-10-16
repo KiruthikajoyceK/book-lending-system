@@ -24,7 +24,7 @@ import com.hcl.booklendingsystem.service.LoginService;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class LonginControllerTest {
+public class LoginControllerTest {
 
    @Mock
    LoginService loginService;  
