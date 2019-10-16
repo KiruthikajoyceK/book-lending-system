@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommonResponse {
- private Integer statusCode;
- private String message;
-	 
+	private Integer statusCode;
+	private String message;
+
 }
