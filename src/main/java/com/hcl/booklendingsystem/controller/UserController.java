@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/users")
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class UserController {
-	
+
    @Autowired
    UserService userService;
    
@@ -49,7 +49,8 @@ public class UserController {
 	 * @param userRequest
 	 * @param bindingResult
 	 * @return ResponseEntity of String which includes the message that user created
-	 *         successfully or not. This method will accept userRequest and
+	 *         successfully or not. 
+	 *         This method will accept userRequest and
 	 *         bindingResult as inputs and call the save method in service layer if
 	 *         there is no binding errors, otherwise throw an exception.
 	 */

@@ -3,7 +3,6 @@ package com.hcl.booklendingsystem.controller;
 import java.util.Optional;
 
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.hcl.booklendingsystem.dto.LoginRequest;
 import com.hcl.booklendingsystem.dto.LoginResponse;
 import com.hcl.booklendingsystem.entity.User;
@@ -26,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @CrossOrigin(allowedHeaders = {"*","*/"}, origins = {"*","*/"})
 public class LoginController {
+	
 	@Autowired
 	LoginService loginService;
 	/**
@@ -35,7 +34,7 @@ public class LoginController {
 	 */
     @PostMapping(value = "/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
-    	 log.debug(BookLendingSystemConstants.LOGIN_DEBUG_END_CONTROLLER);
+    	log.debug(BookLendingSystemConstants.LOGIN_DEBUG_END_CONTROLLER);
     	 LoginResponse loginResponse=new LoginResponse();
         if (bindingResult.hasErrors()) {
         	throw new UserException(bindingResult.getFieldError().getField()+" "+bindingResult.getFieldError().getDefaultMessage());
@@ -48,7 +47,7 @@ public class LoginController {
         }else {
         	throw new UserNotFoundException(BookLendingSystemConstants.USER_NOT_FOUND);
         }
-   	    log.debug(BookLendingSystemConstants.LOGIN_DEBUG_START_CONTROLLER);
+        log.debug(BookLendingSystemConstants.LOGIN_DEBUG_START_CONTROLLER);
         return new ResponseEntity<>(loginResponse,HttpStatus.CREATED);
     }
 }

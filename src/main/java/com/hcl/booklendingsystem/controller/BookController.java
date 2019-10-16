@@ -1,7 +1,7 @@
 package com.hcl.booklendingsystem.controller;
 
 import java.util.Optional;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,20 +9,21 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.hcl.booklendingsystem.dto.BookRequestDetails;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.entity.BookRequest;
 import com.hcl.booklendingsystem.exception.UserException;
+import com.hcl.booklendingsystem.dto.GetBooksOutput;
 import com.hcl.booklendingsystem.service.BookService;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author KiruthikaK
+ * @author KiruthikaK sairam
  * @since 2019/16/10 This class contains the method for add a book for
  *        registered user
  *
@@ -30,17 +31,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
+@RequestMapping("/books")
 public class BookController {
 
 	@Autowired
 	BookService bookService;
 
 	/**
+	 * 
+	 * @param pageNumber
+	 * @return list of books
+	 */
+	@GetMapping("/")
+	public ResponseEntity<List<GetBooksOutput>> getBooks(@RequestParam Integer pageNumber) {
+		return ResponseEntity.status(HttpStatus.OK).body(bookService.getBooks(pageNumber));
+
+	}
+
+	/**
 	 * @param bookRequestDetails
 	 * @return CommonResponse
 	 * 
 	 */
-	@PostMapping("/books")
+	@PostMapping("/")
 	public ResponseEntity<CommonResponse> addBook(@RequestBody BookRequestDetails bookRequestDetails) {
 		log.info(BookLendingSystemConstants.BOOK_CONTROLLER);
 		CommonResponse commonResponse = bookService.addBook(bookRequestDetails);

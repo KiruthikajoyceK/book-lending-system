@@ -1,15 +1,19 @@
 package com.hcl.booklendingsystem.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
 import javax.transaction.Transactional;
-
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.hcl.booklendingsystem.dto.BookRequestDetails;
 import com.hcl.booklendingsystem.dto.CommonResponse;
+import com.hcl.booklendingsystem.dto.GetBooksOutput;
 import com.hcl.booklendingsystem.entity.Author;
 import com.hcl.booklendingsystem.entity.Book;
 import com.hcl.booklendingsystem.entity.BookRequest;
@@ -35,7 +39,6 @@ public class BookServiceImpl implements BookService {
 
 	@Autowired
 	BookRepository bookRepository;
-
 	@Autowired
 	AuthorRepository authorRepository;
 
@@ -48,6 +51,37 @@ public class BookServiceImpl implements BookService {
 	Author author;
 	Book book;
 	CommonResponse commonResponse;
+
+	/**
+	 * @author sairam
+	 * @param pageNumber is mandatory
+	 * @apiNote get the list of books available
+	 * @return List<GetBooksOutput> list of GetBooksOutput contains book details
+	 */
+	@Override
+	public List<GetBooksOutput> getBooks(Integer pageNumber) {
+
+		log.info("BookServiceImpl --> getBooks");
+		log.debug("BookServiceImpl --> getBooks page number:{}", pageNumber);
+		Pageable paging = PageRequest.of(pageNumber, BookLendingSystemConstants.PAGENATION_SIZE);
+		Page<Book> books = bookRepository.findAll(paging);
+		List<GetBooksOutput> getBooksOutputs = new ArrayList<>();
+
+		if (books.hasContent()) {
+			books.getContent().forEach(book -> {
+				GetBooksOutput getBooksOutput = new GetBooksOutput();
+				Optional<Author> authors = authorRepository.findById(book.getAuthorId());
+				authors.ifPresent(author -> getBooksOutput.setAuthorName(author.getAuthorName()));
+				BeanUtils.copyProperties(book, getBooksOutput);
+				getBooksOutputs.add(getBooksOutput);
+			});
+
+		}
+		log.info("BookServiceImpl --> getBooks get");
+
+		return getBooksOutputs;
+
+	}
 
 	/**
 	 * @param bookRequestDetails

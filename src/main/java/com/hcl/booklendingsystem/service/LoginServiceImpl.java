@@ -1,7 +1,6 @@
 package com.hcl.booklendingsystem.service;
 
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hcl.booklendingsystem.dto.LoginRequest;
@@ -27,12 +26,8 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public Optional<User> getUerByUsernameAndPassword(LoginRequest loginRequest) {
 		log.debug(BookLendingSystemConstants.LOGIN_DEBUG_START_SERVICE);
-		Optional<User> optionalUser = userRepository.findByEmailAndPassword(loginRequest.getEmail(),loginRequest.getPassword());
-		/*
-		 * if(!(optionalUser.isPresent() && BCrypt.checkpw(loginRequest.getPassword(),
-		 * optionalUser.get().getPassword()))) { throw new
-		 * UserNotFoundException(BookLendingSystemConstants.USER_NOT_FOUND); }
-		 */
+		Optional<User> optionalUser = userRepository.findByEmailAndPassword(loginRequest.getEmail(),
+				loginRequest.getPassword());
 		log.debug(BookLendingSystemConstants.LOGIN_DEBUG_END_SERVICE);
 		return optionalUser;
 	}

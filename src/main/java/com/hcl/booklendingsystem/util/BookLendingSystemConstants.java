@@ -1,6 +1,9 @@
 package com.hcl.booklendingsystem.util;
 
 public class BookLendingSystemConstants {
+	 public static final Integer PAGENATION_SIZE =10;
+	 public static final String BORROW ="BORROW";
+	 public static final String BOOK_NOT_AVAILABLE ="book not available";
 	public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 	public static final String SAVE_USER_DEBUG_START_CONTROLLER = "Start processing of save() in controller";
 	public static final String SAVE_USER_DEBUG_END_CONTROLLER = "End processing of save() in controller";
