@@ -1,5 +1,12 @@
 package com.hcl.booklendingsystem.dto;
 
-public class CommonResponse {
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+public class CommonResponse {
+ private Integer statusCode;
+ private String message;
+	 
 }
