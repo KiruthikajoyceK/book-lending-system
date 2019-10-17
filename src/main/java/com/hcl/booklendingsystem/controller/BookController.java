@@ -40,18 +40,6 @@ public class BookController {
 	@Autowired
 	BookService bookService;
 
-	/**
-	 * 
-	 * @param pageNumber
-	 * @return list of books
-	 */
-	/*
-	 * @GetMapping("/") public ResponseEntity<List<GetBooksOutput>>
-	 * getBooks(@RequestParam Integer pageNumber) { return
-	 * ResponseEntity.status(HttpStatus.OK).body(bookService.getBooks(pageNumber));
-	 * 
-	 * }
-	 */
 
 	/**
 	 * @param bookRequestDetails
