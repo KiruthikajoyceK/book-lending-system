@@ -47,18 +47,14 @@ public class BookScheduler {
 		LOGGER.info(" releaseBook schedular at:{} ", LocalDateTime.now());
 		LocalDateTime bookExpiredDate = LocalDateTime.now().minusMinutes(2);
 		Optional<List<BookHistory>> booksOpt = bookHistoryRepository.findByBorrowDateLessThan(bookExpiredDate);
-
-		booksOpt.ifPresent(bookHistorys -> {
+		booksOpt.ifPresent(bookHistorys -> 
 			bookHistorys.forEach(bookHistory -> {
 				Optional<Book> books = bookRepository.findById(bookHistory.getBookId());
 				if (books.isPresent()) {
 					books.get().setBookStatus(AVAILABLE);
 					bookRepository.save(books.get());
 				}
-
-			});
-
-		});
+			}));
 		LOGGER.info(" releaseBook schedular completed ");
 
 	}

@@ -2,7 +2,9 @@ package com.hcl.booklendingsystem.controller;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+
 import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
@@ -61,6 +64,8 @@ public class UserControllerTest {
  	   ResponseEntity<CommonResponse> commonResponse=userController.save(userRequest, bindingResult);
        assertNotNull(commonResponse);
     }
+    
+    
     
  
 }

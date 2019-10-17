@@ -1,6 +1,11 @@
 package com.hcl.booklendingsystem.util;
 
 public class BookLendingSystemConstants {
+
+	private BookLendingSystemConstants() {
+
+	}
+
 	public static final Integer PAGENATION_SIZE = 10;
 	public static final String BORROW = "BORROWED";
 	public static final String BOOK_NOT_AVAILABLE = "book not available";
@@ -49,6 +54,6 @@ public class BookLendingSystemConstants {
 	public static final String AUTHOR_NAME_EMPTY = "authorName should not be empty";
 	public static final String USER_ID_NULL = "userId should not be null";
 	public static final String BOOK_ID_EMPTY = "bookId should not be empty";
-	public static final String USER_ID_Empty = "userId should not be empty";
+	public static final String USER_ID_EMPTY = "userId should not be empty";
 
 }

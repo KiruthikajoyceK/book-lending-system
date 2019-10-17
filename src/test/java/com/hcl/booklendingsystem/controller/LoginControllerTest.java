@@ -20,6 +20,7 @@ import com.hcl.booklendingsystem.dto.LoginRequest;
 import com.hcl.booklendingsystem.dto.LoginResponse;
 import com.hcl.booklendingsystem.entity.User;
 import com.hcl.booklendingsystem.exception.UserException;
+import com.hcl.booklendingsystem.exception.UserNotFoundException;
 import com.hcl.booklendingsystem.service.LoginService;
 
 
@@ -59,6 +60,13 @@ public class LoginControllerTest {
    public void testLoginBindException() {
 	   Mockito.when(bindingResult.hasErrors()).thenReturn(true);
 	   Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);
+	   ResponseEntity<LoginResponse> loginResponse=loginController.login(loginRequest, bindingResult);
+	   assertNotNull(loginResponse);
+   }
+   @Test(expected = UserNotFoundException.class)
+   public void testUsetNotFoundException() {
+	   Mockito.when(bindingResult.hasErrors()).thenReturn(false);
+	   Mockito.when(loginService.getUerByUsernameAndPassword(Mockito.any())).thenReturn(Optional.empty());
 	   ResponseEntity<LoginResponse> loginResponse=loginController.login(loginRequest, bindingResult);
 	   assertNotNull(loginResponse);
    }

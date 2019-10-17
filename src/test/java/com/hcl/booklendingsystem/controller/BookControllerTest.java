@@ -40,13 +40,12 @@ public class BookControllerTest {
 	BookRequestDetails bookRequestDetails;
 	CommonResponse commonResponse;
 	BookRequest bookRequest;
-	int bookId;
-	int userId;
+	Integer bookId;
+	Integer userId;
+	BookRequestDetail bookRequestDetail;
 
 	GetBooksOutput getBooksOutput;
 	List<GetBooksOutput> getBooksOutputList;
-
-	BookRequestDetail bookRequestDetail;
 
 	@Before
 	public void setup() {
@@ -65,6 +64,8 @@ public class BookControllerTest {
 		bookRequest.setBookRequestDate(LocalDateTime.now());
 		bookId = 1;
 		userId = 1;
+		bookRequestDetail = new BookRequestDetail();
+		bookRequestDetail.setUserId(1);
 
 		getBooksOutput = new GetBooksOutput();
 		getBooksOutput.setAuthorName("SAIRAM");
@@ -75,6 +76,7 @@ public class BookControllerTest {
 
 		getBooksOutputList = new ArrayList<>();
 		getBooksOutputList.add(getBooksOutput);
+
 	}
 
 	@Test
@@ -143,4 +145,25 @@ public class BookControllerTest {
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
 
 	}
+
+	@Test
+	public void testBorrowRequest() {
+
+		Mockito.when(bookService.requestBook(bookId, bookRequest.getUserId())).thenReturn(Optional.of(bookRequest));
+		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
+	@Test(expected = UserException.class)
+	public void testExpectedUserException() {
+		bookId = null;
+		bookRequest.setUserId(null);
+		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
 }
