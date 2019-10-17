@@ -1,11 +1,10 @@
 package com.hcl.booklendingsystem.exception;
 
-public class PasswordNotMatchExeption extends RuntimeException{
+public class UserException extends RuntimeException{
 
 	private static final long serialVersionUID = 1L;
 
-	public PasswordNotMatchExeption(String message) {
+	public UserException(String message) {
 		super(message);
 	}
-
 }

@@ -1,13 +1,9 @@
 package com.hcl.booklendingsystem.service;
 
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
 import com.hcl.booklendingsystem.repository.UserRepository;
@@ -22,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-	public static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
 
 	@Autowired
 	UserRepository userRepository;
@@ -36,12 +30,12 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Optional<User> save(UserRequest userRequest) {
-		LOGGER.info(BookLendingSystemConstants.SAVE_USER_DEBUG_START_SERVICE);
+		log.info(BookLendingSystemConstants.SAVE_USER_DEBUG_START_SERVICE);
 		User user = new User();
 		BeanUtils.copyProperties(userRequest, user);
 		user.setPassword(userRequest.getPassword());
 		user = userRepository.save(user);
-		LOGGER.info(BookLendingSystemConstants.SAVE_USER_DEBUG_END_SERVICE);
+		log.info(BookLendingSystemConstants.SAVE_USER_DEBUG_END_SERVICE);
 		return Optional.of(user);
 	}
 
@@ -54,9 +48,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Optional<User> getUserByEmail(String email) {
-		LOGGER.debug(BookLendingSystemConstants.GET_USER_BY_EMAIL_DEBUG_START_SERVICE);
+		log.debug(BookLendingSystemConstants.GET_USER_BY_EMAIL_DEBUG_START_SERVICE);
          Optional<User> userOptional= userRepository.findByEmail(email);
-		LOGGER.debug(BookLendingSystemConstants.GET_USER_BY_EMAIL_DEBUG_END_SERVICE);
+		log.debug(BookLendingSystemConstants.GET_USER_BY_EMAIL_DEBUG_END_SERVICE);
 		return userOptional;
 	}
 
