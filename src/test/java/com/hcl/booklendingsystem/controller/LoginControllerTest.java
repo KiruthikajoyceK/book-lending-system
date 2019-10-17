@@ -19,7 +19,7 @@ import org.springframework.validation.FieldError;
 import com.hcl.booklendingsystem.dto.LoginRequest;
 import com.hcl.booklendingsystem.dto.LoginResponse;
 import com.hcl.booklendingsystem.entity.User;
-import com.hcl.booklendingsystem.exception.BindException;
+import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.LoginService;
 
 
@@ -55,7 +55,7 @@ public class LoginControllerTest {
 	   ResponseEntity<LoginResponse> loginResponse=loginController.login(loginRequest, bindingResult);
 	   assertNotNull(loginResponse);
    }
-   @Test(expected=BindException.class)
+   @Test(expected=UserException.class)
    public void testLoginBindException() {
 	   Mockito.when(bindingResult.hasErrors()).thenReturn(true);
 	   Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);

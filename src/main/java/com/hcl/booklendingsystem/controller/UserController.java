@@ -2,9 +2,6 @@ package com.hcl.booklendingsystem.controller;
 
 import java.util.Optional;
 import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
-import com.hcl.booklendingsystem.exception.BindException;
+import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.UserService;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
 import com.hcl.booklendingsystem.validator.UserRequestValidator;
@@ -36,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/users")
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class UserController {
-	public static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
    @Autowired
    UserService userService;
@@ -61,10 +57,10 @@ public class UserController {
 	@PostMapping(value = "/")
 	public ResponseEntity<CommonResponse> save(@Valid @RequestBody UserRequest userRequest,
 			BindingResult bindingResult) {
-		LOGGER.debug(BookLendingSystemConstants.SAVE_USER_DEBUG_START_CONTROLLER);
+		log.debug(BookLendingSystemConstants.SAVE_USER_DEBUG_START_CONTROLLER);
 		CommonResponse commonResponse = new CommonResponse();
 		if (bindingResult.hasErrors()) {
-			throw new BindException(
+			throw new UserException(
 					bindingResult.getFieldError().getField() + " " + bindingResult.getFieldError().getDefaultMessage());
 		}
 		Optional<User> optionalUser = userService.save(userRequest);
@@ -72,7 +68,7 @@ public class UserController {
 			commonResponse.setStatusCode(HttpStatus.OK.value());
 			commonResponse.setMessage(BookLendingSystemConstants.CREATE_SUCESS_MESSAGE);
 		}
-		LOGGER.debug(BookLendingSystemConstants.SAVE_USER_DEBUG_END_CONTROLLER);
+		log.debug(BookLendingSystemConstants.SAVE_USER_DEBUG_END_CONTROLLER);
 		return new ResponseEntity<>(commonResponse, HttpStatus.CREATED);
 	}
 
