@@ -43,6 +43,7 @@ public class BookControllerTest {
 	Integer bookId;
 	Integer userId;
 	BookRequestDetail bookRequestDetail;
+	BookListResponse bookListResponse;
 
 	GetBooksOutput getBooksOutput;
 	List<GetBooksOutput> getBooksOutputList;
@@ -76,6 +77,9 @@ public class BookControllerTest {
 
 		getBooksOutputList = new ArrayList<>();
 		getBooksOutputList.add(getBooksOutput);
+
+		bookListResponse = new BookListResponse();
+		bookListResponse.setStatusCode(500);
 
 	}
 
@@ -136,15 +140,44 @@ public class BookControllerTest {
 		Assert.assertEquals(1, actual.getBody().getBookList().size());
 	}
 
+	@Test(expected = UserException.class)
+	public void testGetBooks1() {
+		
+		Mockito.when(bookService.getBooks("s", "j", -10))
+				.thenReturn(Optional.of(getBooksOutputList));
+
+		ResponseEntity<BookListResponse> actual = bookController.getBooks("s", "j",
+				-10);
+		ResponseEntity<BookListResponse> expected = new ResponseEntity<>(bookListResponse, HttpStatus.OK);
+
+		Assert.assertEquals(expected.getStatusCode(), actual.getStatusCode());
+
+	}
+
+	@Test
+	public void testGetBooks2() {
+
+		Mockito.when(bookService.getBooks(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+				.thenReturn(Optional.empty());
+
+		ResponseEntity<BookListResponse> actual = bookController.getBooks(Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyInt());
+		ResponseEntity<BookListResponse> expected = new ResponseEntity<>(bookListResponse, HttpStatus.OK);
+
+		Assert.assertEquals(expected.getStatusCode(), actual.getStatusCode());
+
+	}
+
 	@Test(expected = BookIdAndUserIdEmptyException.class)
 	public void testBorrowBook2() {
 		BorrowRequest borrowRequest = new BorrowRequest();
 		bookId = 0;
 		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
 		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
-		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+		assertEquals(expected.getStatusCode().value(), actual.getBody().getStatusCode().intValue());
 
 	}
+	
 
 	@Test
 	public void testBorrowRequest() {
@@ -159,6 +192,15 @@ public class BookControllerTest {
 	@Test(expected = UserException.class)
 	public void testExpectedUserException() {
 		bookId = null;
+		bookRequest.setUserId(null);
+		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
+	@Test
+	public void testBorrowRequestOptional() {
 		bookRequest.setUserId(null);
 		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
 		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
