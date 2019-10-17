@@ -1,10 +1,12 @@
 package com.hcl.booklendingsystem.validator;
 
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
 import com.hcl.booklendingsystem.exception.EmailExistException;
@@ -36,6 +38,7 @@ public class UserRequestValidator implements Validator {
 		UserRequest bean = (UserRequest) target;
 		validateEmail(bean);
 		validatePhoneNumber(bean.getPhone());
+
 	}
 
 	private void validateEmail(UserRequest bean) {
