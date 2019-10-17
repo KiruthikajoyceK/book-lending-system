@@ -18,16 +18,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				request.getDescription(false));
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
-	}
-	
-	@ExceptionHandler(PasswordNotMatchExeption.class)
-	public ResponseEntity<ErrorResponse> passwordMatchExceptionHandler(PasswordNotMatchExeption exception, WebRequest request) {
-		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),
-				request.getDescription(false));
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-
-	}
-	
+	}	
 	@ExceptionHandler(EmailExistException.class)
 	public ResponseEntity<ErrorResponse> emailExistExceptionHandler(EmailExistException exception, WebRequest request) {
 		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),
@@ -35,15 +26,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
 	}
-
-	@ExceptionHandler(BindException.class)
-	public ResponseEntity<ErrorResponse> bindExceptionHandler(BindException exception, WebRequest request) {
+	@ExceptionHandler(UserException.class)
+	public ResponseEntity<ErrorResponse> bindExceptionHandler(UserException exception, WebRequest request) {
 		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),
 				request.getDescription(false));
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<ErrorResponse> bindExceptionHandler(UserNotFoundException exception, WebRequest request) {
+	public ResponseEntity<ErrorResponse> userNotFoundExceptionHandler(UserNotFoundException exception, WebRequest request) {
+		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),
+				request.getDescription(false));
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler(BookNotFoundException.class)
+	public ResponseEntity<ErrorResponse> bookNotFoundExceptionHandler(BookNotFoundException exception, WebRequest request) {
 		ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),
 				request.getDescription(false));
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

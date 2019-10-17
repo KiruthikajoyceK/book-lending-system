@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.hcl.booklendingsystem.entity.Author;
 
 @Repository
-public interface AuthorRepository extends JpaRepository<Author, Integer>{
+
+public interface AuthorRepository extends JpaRepository<Author, Integer> {
 
 	public Optional<Author> findByAuthorName(String authorName);
 

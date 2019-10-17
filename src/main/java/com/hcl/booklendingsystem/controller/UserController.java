@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.UserRequest;
 import com.hcl.booklendingsystem.entity.User;
-import com.hcl.booklendingsystem.exception.BindException;
+import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.UserService;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
 import com.hcl.booklendingsystem.validator.UserRequestValidator;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/users")
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class UserController {
-	
+
    @Autowired
    UserService userService;
    
@@ -49,7 +49,8 @@ public class UserController {
 	 * @param userRequest
 	 * @param bindingResult
 	 * @return ResponseEntity of String which includes the message that user created
-	 *         successfully or not. This method will accept userRequest and
+	 *         successfully or not. 
+	 *         This method will accept userRequest and
 	 *         bindingResult as inputs and call the save method in service layer if
 	 *         there is no binding errors, otherwise throw an exception.
 	 */
@@ -59,7 +60,7 @@ public class UserController {
 		log.debug(BookLendingSystemConstants.SAVE_USER_DEBUG_START_CONTROLLER);
 		CommonResponse commonResponse = new CommonResponse();
 		if (bindingResult.hasErrors()) {
-			throw new BindException(
+			throw new UserException(
 					bindingResult.getFieldError().getField() + " " + bindingResult.getFieldError().getDefaultMessage());
 		}
 		Optional<User> optionalUser = userService.save(userRequest);
