@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,15 +18,18 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import com.hcl.booklendingsystem.dto.BookRequestDetails;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.entity.Author;
 import com.hcl.booklendingsystem.entity.Book;
+import com.hcl.booklendingsystem.entity.BookHistory;
 import com.hcl.booklendingsystem.entity.BookRequest;
 import com.hcl.booklendingsystem.entity.User;
 import com.hcl.booklendingsystem.exception.BookNotFoundException;
 import com.hcl.booklendingsystem.exception.UserNotFoundException;
 import com.hcl.booklendingsystem.repository.AuthorRepository;
+import com.hcl.booklendingsystem.repository.BookHistoryRepository;
 import com.hcl.booklendingsystem.repository.BookRepository;
 import com.hcl.booklendingsystem.repository.BookRequestRepository;
 import com.hcl.booklendingsystem.repository.UserRepository;
@@ -48,10 +52,18 @@ public class BookServiceImplTest {
 	List<Book> books;
 	Author author;
 	Page<Book> Pagebooks;
+
+	@Mock
+	BookHistoryRepository bookHistoryRepository;
+
 	BookRequestDetails bookRequestDetails;
 	CommonResponse commonResponse;
 	User user;
 	BookRequest bookRequest;
+	int bookId;
+	int userId;
+	BookHistory bookHistory;
+
 	@Before
 	public void setUp() {
 		paging = PageRequest.of(0, 10);
@@ -78,8 +90,17 @@ public class BookServiceImplTest {
 		book = new Book();
 		book.setBookName("java");
 		book.setBookId(1);
+
+		bookId = 1;
+		userId = 1;
+
+		bookHistory = new BookHistory();
+		bookHistory.setUserId(userId);
+		bookHistory.setBookHistoryId(1);
+		bookHistory.setBookId(1);
+
 		commonResponse = new CommonResponse();
-	    bookRequest=new BookRequest();
+		bookRequest = new BookRequest();
 		bookRequest.setBookId(1);
 		bookRequest.setUserId(1);
 		bookRequest.setBookRequestId(1);
@@ -110,6 +131,7 @@ public class BookServiceImplTest {
 		commonResponse = bookServiceImpl.addBook(bookRequestDetails);
 		assertEquals(bookRequestDetails.getBookName(), book.getBookName());
 	}
+
 	@Test
 	public void testAddBook() {
 		Mockito.when(userRepository.findById(bookRequestDetails.getUserId())).thenReturn(Optional.of(user));
@@ -117,28 +139,49 @@ public class BookServiceImplTest {
 		commonResponse = bookServiceImpl.addBook(bookRequestDetails);
 		assertEquals(bookRequestDetails.getBookName(), book.getBookName());
 	}
+
 	@Test
 	public void testBookRequest() {
 		Mockito.when(bookRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(book));
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
 		Mockito.when(bookRequestRepository.save(Mockito.any())).thenReturn(bookRequest);
-        Optional<BookRequest> bookRequestOptional=bookServiceImpl.requestBook(1, 1);
-        assertNotNull(bookRequestOptional);
+		Optional<BookRequest> bookRequestOptional = bookServiceImpl.requestBook(1, 1);
+		assertNotNull(bookRequestOptional);
 
 	}
+
 	@Test(expected = BookNotFoundException.class)
 	public void testBookNotFoundException() {
 		Mockito.when(bookRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-        Optional<BookRequest> bookRequestOptional=bookServiceImpl.requestBook(1, 1);
-        assertNotNull(bookRequestOptional);
+		Optional<BookRequest> bookRequestOptional = bookServiceImpl.requestBook(1, 1);
+		assertNotNull(bookRequestOptional);
 
 	}
+
 	@Test(expected = UserNotFoundException.class)
 	public void testUserNotFoundException() {
 		Mockito.when(bookRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(book));
 		Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
-        Optional<BookRequest> bookRequestOptional=bookServiceImpl.requestBook(1, 1);
-        assertNotNull(bookRequestOptional);
+		Optional<BookRequest> bookRequestOptional = bookServiceImpl.requestBook(1, 1);
+		assertNotNull(bookRequestOptional);
 
 	}
+
+	@Test
+	public void testBorrowBook() {
+
+		Mockito.when(bookRepository.findById(book.getBookId())).thenReturn(Optional.of(book));
+		commonResponse = bookServiceImpl.borrowBook(bookId, userId);
+		assertEquals(user.getUserId(), bookHistory.getUserId());
+
+	}
+
+	@Test(expected = BookNotFoundException.class)
+	public void testBorrowBook1() {
+
+		Mockito.when(bookRepository.findById(book.getBookId())).thenReturn(Optional.empty());
+		commonResponse = bookServiceImpl.borrowBook(bookId, userId);
+
+	}
+
 }

@@ -12,4 +12,6 @@ public interface BookService {
 	public Optional<BookRequest> requestBook(Integer bookId, Integer userId);
 	public Optional<List<GetBooksOutput>>getBooks(String bookName,String authorName,Integer pageNumber);
 
+	public CommonResponse borrowBook(Integer bookId, Integer userId);
+
 }

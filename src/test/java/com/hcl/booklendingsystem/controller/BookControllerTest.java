@@ -16,7 +16,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.hcl.booklendingsystem.dto.BookRequestDetail;
 import com.hcl.booklendingsystem.dto.BookRequestDetails;
+import com.hcl.booklendingsystem.dto.BorrowRequest;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.entity.BookRequest;
 import com.hcl.booklendingsystem.exception.UserException;
@@ -32,6 +34,8 @@ public class BookControllerTest {
 	BookRequestDetails bookRequestDetails;
 	CommonResponse commonResponse;
 	BookRequest bookRequest;
+	int bookId;
+	int userId;
 
 	@Before
 	public void setup() {
@@ -46,6 +50,8 @@ public class BookControllerTest {
 		bookRequest.setUserId(1);
 		bookRequest.setBookRequestId(1);
 		bookRequest.setBookRequestDate(LocalDateTime.now());
+		bookId = 1;
+		userId = 1;
 	}
 
 	@Test
@@ -58,13 +64,27 @@ public class BookControllerTest {
 
 	@Test
 	public void testBookRequest() {
+		BookRequestDetail bookRequestDetail=new BookRequestDetail();
+		bookRequest.setUserId(1);
 		Mockito.when(bookService.requestBook(1, 1)).thenReturn(Optional.of(bookRequest));
-		ResponseEntity<CommonResponse> response = bookController.bookRequest(1, 1);
+		ResponseEntity<CommonResponse> response = bookController.bookRequest(1, bookRequestDetail);
 		assertNotNull(response);
 	}
+
 	@Test(expected = UserException.class)
 	public void testUserException() {
 		ResponseEntity<CommonResponse> response = bookController.bookRequest(null, null);
 		assertNotNull(response);
 	}
+
+	@Test
+	public void testBorrowBook() {
+		BorrowRequest borrowRequest=new BorrowRequest();
+		Mockito.when(bookService.borrowBook(bookId, userId)).thenReturn(commonResponse);
+		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
 }
