@@ -18,37 +18,7 @@ public class Book {
 	private String bookStatus;
 	private Integer authorId;
 	private Integer userId;
-	public Integer getBookId() {
-		return bookId;
-	}
-	public void setBookId(Integer bookId) {
-		this.bookId = bookId;
-	}
-	public String getBookName() {
-		return bookName;
-	}
-	public void setBookName(String bookName) {
-		this.bookName = bookName;
-	}
-	public String getBookStatus() {
-		return bookStatus;
-	}
-	public void setBookStatus(String bookStatus) {
-		this.bookStatus = bookStatus;
-	}
-	public Integer getAuthorId() {
-		return authorId;
-	}
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
 	
+		
 	
 }
