@@ -45,10 +45,6 @@ public class BookServiceImpl implements BookService {
 	@Autowired
 	BookRequestRepository bookRequestRepository;
 
-	
-
-	
-
 	/**
 	 * @param bookRequestDetails
 	 * @return CommonResponse
@@ -91,51 +87,56 @@ public class BookServiceImpl implements BookService {
 	}
 
 	/**
-	 * This method will accept bookId and userId and throw BookNotFound exception if the book is not exist
-	 * and throw UserNotfound exception if user is not present,else save bookRequest object in respective table
-	 * by calling save method in userRepository.
+	 * This method will accept bookId and userId and throw BookNotFound exception if
+	 * the book is not exist and throw UserNotfound exception if user is not
+	 * present,else save bookRequest object in respective table by calling save
+	 * method in userRepository.
+	 * 
 	 * @param bookId
 	 * @param userId
-	 * @return Optional<BookRequest> 
+	 * @return Optional<BookRequest>
 	 */
 	@Override
 	public Optional<BookRequest> requestBook(Integer bookId, Integer userId) {
-		Optional<Book> bookOptional=bookRepository.findById(bookId);
-		if(!bookOptional.isPresent())
+		Optional<Book> bookOptional = bookRepository.findById(bookId);
+		if (!bookOptional.isPresent())
 			throw new BookNotFoundException(BookLendingSystemConstants.BOOK_NOT_FOUND_EXCEPTION);
-		Optional<User>userOptional=userRepository.findById(userId);
-		if(!userOptional.isPresent())
+		Optional<User> userOptional = userRepository.findById(userId);
+		if (!userOptional.isPresent())
 			throw new UserNotFoundException(BookLendingSystemConstants.USER_NOT_FOUND);
-		BookRequest bookRequest=new BookRequest();
+		BookRequest bookRequest = new BookRequest();
 		bookRequest.setBookId(bookId);
 		bookRequest.setUserId(userId);
 		bookRequest.setBookRequestDate(LocalDateTime.now());
-		bookRequest=bookRequestRepository.save(bookRequest);
+		bookRequest = bookRequestRepository.save(bookRequest);
 		return Optional.of(bookRequest);
 	}
+
 	/**
-	 * This method will accept bookName,authorName and pageNumber and filter the books based on values 
-	 * then send filtered result back.
+	 * This method will accept bookName,authorName and pageNumber and filter the
+	 * books based on values then send filtered result back.
+	 * 
 	 * @param bookName
 	 * @param authorName
 	 * @param pageNumber
-	 * @return ResponseEntity of BookListResponse 
+	 * @return ResponseEntity of BookListResponse
 	 */
 	@Override
 	public Optional<List<GetBooksOutput>> getBooks(String bookName, String authorName, Integer pageNumber) {
 		Pageable pageable = PageRequest.of(pageNumber, BookLendingSystemConstants.PAGENATION_SIZE);
 		List<GetBooksOutput> getBooksOutputs = new ArrayList<>();
-		List<Book> bookList =new ArrayList<>();
-		if(bookName==null && authorName==null) {
+		List<Book> bookList = new ArrayList<>();
+		if (bookName == null && authorName == null) {
 			Page<Book> books = bookRepository.findAll(pageable);
-			if(books.hasContent()) {
-				bookList=books.getContent();
+			if (books.hasContent()) {
+				bookList = books.getContent();
 			}
-
-		}else {
-		bookList=bookRepository.searchBook(bookName, authorName,pageable);
-	}
-		bookList.forEach(book->{
+		} else if (bookName != null && authorName != null) {
+			bookList = bookRepository.searchBookByAuthorNameAndBookName(bookName, authorName, pageable);
+		} else {
+			bookList = bookRepository.searchBookByAuthorNameOrBookName(bookName, authorName, pageable);
+		}
+		bookList.forEach(book -> {
 			GetBooksOutput getBooksOutput = new GetBooksOutput();
 			Optional<Author> authorOptonal = authorRepository.findById(book.getAuthorId());
 			authorOptonal.ifPresent(author -> getBooksOutput.setAuthorName(author.getAuthorName()));
