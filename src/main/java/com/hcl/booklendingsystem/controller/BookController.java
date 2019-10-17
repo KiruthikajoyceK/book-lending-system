@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.hcl.booklendingsystem.dto.BookListResponse;
+import com.hcl.booklendingsystem.dto.BookRequestDetail;
 import com.hcl.booklendingsystem.dto.BookRequestDetails;
+import com.hcl.booklendingsystem.dto.BorrowRequest;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.GetBooksOutput;
 import com.hcl.booklendingsystem.entity.BookRequest;
@@ -25,6 +28,7 @@ import com.hcl.booklendingsystem.exception.BookIdAndUserIdEmptyException;
 import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.BookService;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -44,10 +48,10 @@ public class BookController {
 	@Autowired
 	BookService bookService;
 
+
 	/**
 	 * This method for add a book by the registered user with Not empty
 	 * bookRequestDetails fields.
-	 * 
 	 * @param bookRequestDetails
 	 * @return CommonResponse
 	 * 
@@ -73,13 +77,13 @@ public class BookController {
 	 */
 	@PostMapping("/books/{bookId}/request")
 	public ResponseEntity<CommonResponse> bookRequest(@PathVariable("bookId") Integer bookId,
-			@RequestParam("userId") Integer userId) {
+			@RequestBody BookRequestDetail bookRequest) {
 		log.info(BookLendingSystemConstants.BOOK_REQUEST_DEBUG_START_CONTROLLER);
-		if (bookId == null || userId == null) {
+		if (bookId == null || bookRequest.getUserId() == null) {
 			throw new UserException(BookLendingSystemConstants.BOOK_ID_USER_ID_MANDATORY_EXCEPTION);
 		}
 		CommonResponse commonResponse = new CommonResponse();
-		Optional<BookRequest> bookRequestOptional = bookService.requestBook(bookId, userId);
+		Optional<BookRequest> bookRequestOptional = bookService.requestBook(bookId, bookRequest.getUserId());
 		if (bookRequestOptional.isPresent() && bookRequestOptional.get().getBookRequestId() != null) {
 			commonResponse.setMessage(BookLendingSystemConstants.REQUEST_SENT_SUCESS);
 			commonResponse.setStatusCode(HttpStatus.OK.value());
@@ -134,15 +138,15 @@ public class BookController {
 	 */
 	@PostMapping("/{bookId}/borrow")
 	public ResponseEntity<CommonResponse> borrowBook(@PathVariable Integer bookId,
-			@RequestParam("userId") Integer userId) {
+			@RequestBody BorrowRequest borrowRequest) {
 		log.info(BookLendingSystemConstants.BOOK_CONTROLLER_START);
 		if (bookId == 0) {
 			throw new BookIdAndUserIdEmptyException(BookLendingSystemConstants.BOOK_ID_EMPTY);
 		}
-		if (userId == 0) {
+		if (borrowRequest.getUserId() == 0) {
 			throw new BookIdAndUserIdEmptyException(BookLendingSystemConstants.USER_ID_Empty);
 		}
-		CommonResponse commonResponse = bookService.borrowBook(bookId, userId);
+		CommonResponse commonResponse = bookService.borrowBook(bookId, borrowRequest.getUserId());
 		commonResponse.setMessage(BookLendingSystemConstants.UPDATED);
 		commonResponse.setStatusCode(HttpStatus.OK.value());
 		log.info(BookLendingSystemConstants.BOOK_CONTROLLER_END);
