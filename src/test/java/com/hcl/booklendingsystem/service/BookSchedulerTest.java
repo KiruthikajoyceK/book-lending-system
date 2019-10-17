@@ -76,6 +76,7 @@ public class BookSchedulerTest {
 	@Test
 	public void testReleaseBook() {
 //		Mockito.when(bookHistoryRepository.findByBorrowDateLessThan(LocalDateTime.now()))
+
 //				.thenReturn(Optional.of(bookHistoryList));
 //		Mockito.when(bookRepository.findById(bookHistory.getBookId())).thenReturn(Optional.of(book));
 //		Mockito.when(bookRepository.save(book)).thenReturn(book);

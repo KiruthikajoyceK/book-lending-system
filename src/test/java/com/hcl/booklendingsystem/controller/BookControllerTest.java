@@ -26,6 +26,7 @@ import com.hcl.booklendingsystem.dto.BorrowRequest;
 import com.hcl.booklendingsystem.dto.CommonResponse;
 import com.hcl.booklendingsystem.dto.GetBooksOutput;
 import com.hcl.booklendingsystem.entity.BookRequest;
+import com.hcl.booklendingsystem.exception.BookIdAndUserIdEmptyException;
 import com.hcl.booklendingsystem.exception.UserException;
 import com.hcl.booklendingsystem.service.BookService;
 
@@ -45,8 +46,12 @@ public class BookControllerTest {
 	GetBooksOutput getBooksOutput;
 	List<GetBooksOutput> getBooksOutputList;
 
+	BookRequestDetail bookRequestDetail;
+
 	@Before
 	public void setup() {
+		bookRequestDetail = new BookRequestDetail();
+		bookRequestDetail.setUserId(1);
 		bookRequestDetails = new BookRequestDetails();
 		bookRequestDetails.setUserId(1);
 		bookRequestDetails.setAuthorName("kiruthika");
@@ -80,11 +85,10 @@ public class BookControllerTest {
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
 	}
 
-	@Test
+	@Test(expected = UserException.class)
 	public void testBookRequest() {
 		BookRequestDetail bookRequestDetail = new BookRequestDetail();
 		bookRequest.setUserId(1);
-		Mockito.when(bookService.requestBook(1, 1)).thenReturn(Optional.of(bookRequest));
 		ResponseEntity<CommonResponse> response = bookController.bookRequest(1, bookRequestDetail);
 		assertNotNull(response);
 	}
@@ -97,8 +101,22 @@ public class BookControllerTest {
 
 	@Test
 	public void testBorrowBook() {
+
 		BorrowRequest borrowRequest = new BorrowRequest();
+		borrowRequest.setUserId(1);
 		Mockito.when(bookService.borrowBook(bookId, userId)).thenReturn(commonResponse);
+
+		Mockito.when(bookService.borrowBook(bookId, borrowRequest.getUserId())).thenReturn(commonResponse);
+		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
+	@Test(expected = BookIdAndUserIdEmptyException.class)
+	public void testBorrowBook1() {
+		BorrowRequest borrowRequest = new BorrowRequest();
+		borrowRequest.setUserId(0);
 		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
 		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
@@ -112,8 +130,17 @@ public class BookControllerTest {
 
 		ResponseEntity<BookListResponse> actual = bookController.getBooks(Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyInt());
-		
+
 		Assert.assertEquals(1, actual.getBody().getBookList().size());
 	}
 
+	@Test(expected = BookIdAndUserIdEmptyException.class)
+	public void testBorrowBook2() {
+		BorrowRequest borrowRequest = new BorrowRequest();
+		bookId = 0;
+		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
 }
