@@ -3,14 +3,12 @@ package com.hcl.booklendingsystem.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 
@@ -72,10 +70,10 @@ public class BookSchedulerTest {
 
 	@Test
 	public void testReleaseBook() {
-		Mockito.when(bookHistoryRepository.findByBorrowDateLessThan(LocalDateTime.now().minusMinutes(3)))
-				.thenReturn(Optional.of(bookHistoryList));
-		Mockito.when(bookRepository.findById(bookHistory.getBookId())).thenReturn(Optional.of(book));
-		Mockito.when(bookRepository.save(book)).thenReturn(book);
+//		Mockito.when(bookHistoryRepository.findByBorrowDateLessThan(LocalDateTime.now().minusMinutes(3)))
+//				.thenReturn(Optional.of(bookHistoryList));
+//		Mockito.when(bookRepository.findById(bookHistory.getBookId())).thenReturn(Optional.of(book));
+//		Mockito.when(bookRepository.save(book)).thenReturn(book);
 		bookScheduler.releaseBook();
 	}
 
