@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +35,9 @@ public class BookControllerTest {
 	BookRequestDetails bookRequestDetails;
 	CommonResponse commonResponse;
 	BookRequest bookRequest;
-	int bookId;
-	int userId;
+	Integer bookId;
+	Integer userId;
+	BookRequestDetail bookRequestDetail;
 
 	@Before
 	public void setup() {
@@ -52,6 +54,8 @@ public class BookControllerTest {
 		bookRequest.setBookRequestDate(LocalDateTime.now());
 		bookId = 1;
 		userId = 1;
+		bookRequestDetail=new BookRequestDetail();
+		bookRequestDetail.setUserId(1);
 	}
 
 	@Test
@@ -106,4 +110,26 @@ public class BookControllerTest {
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
 
 	}
+
+	@Test
+	public void testBorrowRequest() {
+
+		Mockito.when(bookService.requestBook(bookId, bookRequest.getUserId())).thenReturn(Optional.of(bookRequest));
+		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+	
+	@Test(expected = UserException.class)
+	public void testExpectedUserException() {
+		bookId=null;
+		bookRequest.setUserId(null);
+		ResponseEntity<CommonResponse> actual = bookController.bookRequest(bookId, bookRequestDetail);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+	
+	
 }

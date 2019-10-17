@@ -144,7 +144,7 @@ public class BookController {
 			throw new BookIdAndUserIdEmptyException(BookLendingSystemConstants.BOOK_ID_EMPTY);
 		}
 		if (borrowRequest.getUserId() == 0) {
-			throw new BookIdAndUserIdEmptyException(BookLendingSystemConstants.USER_ID_Empty);
+			throw new BookIdAndUserIdEmptyException(BookLendingSystemConstants.USER_ID_EMPTY);
 		}
 		CommonResponse commonResponse = bookService.borrowBook(bookId, borrowRequest.getUserId());
 		commonResponse.setMessage(BookLendingSystemConstants.UPDATED);
