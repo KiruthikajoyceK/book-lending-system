@@ -18,6 +18,11 @@ import com.hcl.booklendingsystem.entity.BookHistory;
 import com.hcl.booklendingsystem.repository.BookHistoryRepository;
 import com.hcl.booklendingsystem.repository.BookRepository;
 
+/**
+ * 
+ * @author sairam
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class BookSchedulerTest {
 
@@ -57,7 +62,7 @@ public class BookSchedulerTest {
 		bookHistory = new BookHistory();
 		bookHistory.setBookHistoryId(1);
 		bookHistory.setBookId(book.getBookId());
-		bookHistory.setBorrowDate(LocalDateTime.now().minusMinutes(5));
+		bookHistory.setBorrowDate(LocalDateTime.now().minusMinutes(10));
 		bookHistory.setUserId(1);
 
 		bookHistoryList = new ArrayList<>();
@@ -70,7 +75,8 @@ public class BookSchedulerTest {
 
 	@Test
 	public void testReleaseBook() {
-//		Mockito.when(bookHistoryRepository.findByBorrowDateLessThan(LocalDateTime.now().minusMinutes(3)))
+//		Mockito.when(bookHistoryRepository.findByBorrowDateLessThan(LocalDateTime.now()))
+
 //				.thenReturn(Optional.of(bookHistoryList));
 //		Mockito.when(bookRepository.findById(bookHistory.getBookId())).thenReturn(Optional.of(book));
 //		Mockito.when(bookRepository.save(book)).thenReturn(book);
