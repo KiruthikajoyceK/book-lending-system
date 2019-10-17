@@ -75,7 +75,7 @@ public class BookController {
 	 * @param userId
 	 * @return ResponseEntity of CommonResponse
 	 */
-	@PostMapping("/books/{bookId}/request")
+	@PostMapping("/{bookId}/request")
 	public ResponseEntity<CommonResponse> bookRequest(@PathVariable("bookId") Integer bookId,
 			@RequestBody BookRequestDetail bookRequest) {
 		log.info(BookLendingSystemConstants.BOOK_REQUEST_DEBUG_START_CONTROLLER);

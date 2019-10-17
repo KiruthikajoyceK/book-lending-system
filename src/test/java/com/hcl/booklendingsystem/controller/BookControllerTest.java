@@ -36,9 +36,11 @@ public class BookControllerTest {
 	BookRequest bookRequest;
 	int bookId;
 	int userId;
-
+	BookRequestDetail bookRequestDetail;
 	@Before
 	public void setup() {
+		bookRequestDetail=new BookRequestDetail();
+		bookRequest.setUserId(1);
 		bookRequestDetails = new BookRequestDetails();
 		bookRequestDetails.setUserId(1);
 		bookRequestDetails.setAuthorName("kiruthika");
@@ -64,8 +66,6 @@ public class BookControllerTest {
 
 	@Test
 	public void testBookRequest() {
-		BookRequestDetail bookRequestDetail=new BookRequestDetail();
-		bookRequest.setUserId(1);
 		Mockito.when(bookService.requestBook(1, 1)).thenReturn(Optional.of(bookRequest));
 		ResponseEntity<CommonResponse> response = bookController.bookRequest(1, bookRequestDetail);
 		assertNotNull(response);
@@ -80,7 +80,8 @@ public class BookControllerTest {
 	@Test
 	public void testBorrowBook() {
 		BorrowRequest borrowRequest=new BorrowRequest();
-		Mockito.when(bookService.borrowBook(bookId, userId)).thenReturn(commonResponse);
+		borrowRequest.setUserId(1);
+		Mockito.when(bookService.borrowBook(1, 1)).thenReturn(commonResponse);
 		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, borrowRequest);
 		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
