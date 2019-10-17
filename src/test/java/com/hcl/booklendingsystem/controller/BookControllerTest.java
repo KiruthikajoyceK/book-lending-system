@@ -28,6 +28,8 @@ public class BookControllerTest {
 	BookRequestDetails bookRequestDetails;
 
 	CommonResponse commonResponse;
+	int bookId;
+	int userId;
 
 	@Before
 	public void setup() {
@@ -38,6 +40,8 @@ public class BookControllerTest {
 
 		commonResponse = new CommonResponse();
 		commonResponse.setStatusCode(201);
+		bookId = 1;
+		userId = 1;
 	}
 
 	@Test
@@ -48,4 +52,14 @@ public class BookControllerTest {
 		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
 
 	}
+
+	@Test
+	public void testBorrowBook() {
+		Mockito.when(bookService.borrowBook(bookId, userId)).thenReturn(commonResponse);
+		ResponseEntity<CommonResponse> actual = bookController.borrowBook(bookId, userId);
+		ResponseEntity<CommonResponse> expected = new ResponseEntity<>(commonResponse, HttpStatus.OK);
+		assertEquals(expected.getStatusCode().value(), actual.getStatusCodeValue());
+
+	}
+
 }

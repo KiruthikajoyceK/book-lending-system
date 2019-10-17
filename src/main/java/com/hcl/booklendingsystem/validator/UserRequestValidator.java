@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserRequestValidator implements Validator {
 	@Autowired
 	UserService userService;
-	
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return clazz.equals(UserRequest.class);
@@ -34,12 +34,13 @@ public class UserRequestValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		log.debug(BookLendingSystemConstants.VALIDATING);
 		UserRequest bean = (UserRequest) target;
-        validateEmail(bean);	
+		validateEmail(bean);
 	}
-	 private void validateEmail(UserRequest bean) {
-	    	Optional<User> user=userService.getUserByEmail(bean.getEmail());
-	    	if (user.isPresent()) {
-	            throw new EmailExistException(BookLendingSystemConstants.EMAIL_EXIST_VALE);
-	        }
-	    }
+
+	private void validateEmail(UserRequest bean) {
+		Optional<User> user = userService.getUserByEmail(bean.getEmail());
+		if (user.isPresent()) {
+			throw new EmailExistException(BookLendingSystemConstants.EMAIL_EXIST_VALE);
+		}
+	}
 }

@@ -7,4 +7,6 @@ public interface BookService {
 
 	public CommonResponse addBook(BookRequestDetails bookRequestDetails);
 
+	public CommonResponse borrowBook(Integer bookId, Integer userId);
+
 }
