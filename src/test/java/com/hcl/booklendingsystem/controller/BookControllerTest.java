@@ -142,9 +142,6 @@ public class BookControllerTest {
 
 	@Test(expected = UserException.class)
 	public void testGetBooks1() {
-		
-		Mockito.when(bookService.getBooks("s", "j", -10))
-				.thenReturn(Optional.of(getBooksOutputList));
 
 		ResponseEntity<BookListResponse> actual = bookController.getBooks("s", "j",
 				-10);
