@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.hcl.booklendingsystem.entity.Book;
@@ -18,6 +19,11 @@ import com.hcl.booklendingsystem.exception.CommonException;
 import com.hcl.booklendingsystem.repository.BookHistoryRepository;
 import com.hcl.booklendingsystem.repository.BookRepository;
 
+/**
+ * 
+ * @author sairam
+ *
+ */
 @Service
 public class BookScheduler {
 	@Autowired
@@ -31,9 +37,17 @@ public class BookScheduler {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BookScheduler.class);
 
-	//@Scheduled(fixedRate = 2000)
+
+	/**
+	 * releaseBook is schedular it wil run on fixed intervel of time and it will
+	 * upadete book status to AVAILABLE who are taken before 2 minutes
+	 * 
+	 * @apiNote : it will take the date from database directly according to the
+	 *          conditions, no need to pass input
+	 */
+	@Scheduled(fixedRate = 2000)
 	public void releaseBook() {
-		LOGGER.info(" releaseBook schedular at " + LocalDateTime.now());
+		LOGGER.info(" releaseBook schedular at:{} ", LocalDateTime.now());
 		LocalDateTime bookExpiredDate = LocalDateTime.now().minusMinutes(2);
 		Optional<List<BookHistory>> booksOpt = bookHistoryRepository.findByBorrowDateLessThan(bookExpiredDate);
 		booksOpt.ifPresent(bookHistorys -> {
