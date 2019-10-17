@@ -25,7 +25,6 @@ import com.hcl.booklendingsystem.repository.BookRepository;
 import com.hcl.booklendingsystem.repository.BookRequestRepository;
 import com.hcl.booklendingsystem.repository.UserRepository;
 import com.hcl.booklendingsystem.util.BookLendingSystemConstants;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,47 +40,14 @@ public class BookServiceImpl implements BookService {
 	BookRepository bookRepository;
 	@Autowired
 	AuthorRepository authorRepository;
-
 	@Autowired
 	UserRepository userRepository;
-	
 	@Autowired
 	BookRequestRepository bookRequestRepository;
 
-	Author author;
-	Book book;
-	CommonResponse commonResponse;
+	
 
-	/**
-	 * @author sairam
-	 * @param pageNumber is mandatory
-	 * @apiNote get the list of books available
-	 * @return List<GetBooksOutput> list of GetBooksOutput contains book details
-	 */
-	@Override
-	public List<GetBooksOutput> getBooks(Integer pageNumber) {
-
-		log.info("BookServiceImpl --> getBooks");
-		log.debug("BookServiceImpl --> getBooks page number:{}", pageNumber);
-		Pageable paging = PageRequest.of(pageNumber, BookLendingSystemConstants.PAGENATION_SIZE);
-		Page<Book> books = bookRepository.findAll(paging);
-		List<GetBooksOutput> getBooksOutputs = new ArrayList<>();
-
-		if (books.hasContent()) {
-			books.getContent().forEach(book -> {
-				GetBooksOutput getBooksOutput = new GetBooksOutput();
-				Optional<Author> authors = authorRepository.findById(book.getAuthorId());
-				authors.ifPresent(author -> getBooksOutput.setAuthorName(author.getAuthorName()));
-				BeanUtils.copyProperties(book, getBooksOutput);
-				getBooksOutputs.add(getBooksOutput);
-			});
-
-		}
-		log.info("BookServiceImpl --> getBooks get");
-
-		return getBooksOutputs;
-
-	}
+	
 
 	/**
 	 * @param bookRequestDetails
@@ -92,13 +58,13 @@ public class BookServiceImpl implements BookService {
 	 */
 	@Transactional
 	public CommonResponse addBook(BookRequestDetails bookRequestDetails) {
-
 		log.info(BookLendingSystemConstants.BOOK_SERVICE);
+		Author author;
+		Book book;
+		CommonResponse commonResponse;
 		Optional<User> user = userRepository.findById(bookRequestDetails.getUserId());
-
 		if (!user.isPresent()) {
 			throw new UserNotFoundException(BookLendingSystemConstants.USER_NOT_EXISTS);
-
 		}
 		Optional<Author> authorr = authorRepository.findByAuthorName(bookRequestDetails.getAuthorName());
 		if (!authorr.isPresent()) {
@@ -121,7 +87,6 @@ public class BookServiceImpl implements BookService {
 			bookRepository.save(book);
 		}
 		commonResponse = new CommonResponse();
-
 		return commonResponse;
 	}
 
@@ -147,6 +112,37 @@ public class BookServiceImpl implements BookService {
 		bookRequest.setBookRequestDate(LocalDateTime.now());
 		bookRequest=bookRequestRepository.save(bookRequest);
 		return Optional.of(bookRequest);
+	}
+	/**
+	 * This method will accept bookName,authorName and pageNumber and filter the books based on values 
+	 * then send filtered result back.
+	 * @param bookName
+	 * @param authorName
+	 * @param pageNumber
+	 * @return ResponseEntity of BookListResponse 
+	 */
+	@Override
+	public Optional<List<GetBooksOutput>> getBooks(String bookName, String authorName, Integer pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber, BookLendingSystemConstants.PAGENATION_SIZE);
+		List<GetBooksOutput> getBooksOutputs = new ArrayList<>();
+		List<Book> bookList =new ArrayList<>();
+		if(bookName==null && authorName==null) {
+			Page<Book> books = bookRepository.findAll(pageable);
+			if(books.hasContent()) {
+				bookList=books.getContent();
+			}
+
+		}else {
+		bookList=bookRepository.searchBook(bookName, authorName,pageable);
+	}
+		bookList.forEach(book->{
+			GetBooksOutput getBooksOutput = new GetBooksOutput();
+			Optional<Author> authorOptonal = authorRepository.findById(book.getAuthorId());
+			authorOptonal.ifPresent(author -> getBooksOutput.setAuthorName(author.getAuthorName()));
+			BeanUtils.copyProperties(book, getBooksOutput);
+			getBooksOutputs.add(getBooksOutput);
+		});
+		return Optional.of(getBooksOutputs);
 	}
 
 }

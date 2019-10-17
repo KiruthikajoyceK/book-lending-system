@@ -32,7 +32,7 @@ public class BookScheduler {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(BookScheduler.class);
 
-	@Scheduled(fixedRate = 2000)
+	//@Scheduled(fixedRate = 2000)
 	public void releaseBook() {
 		LOGGER.info(" releaseBook schedular at " + LocalDateTime.now());
 		LocalDateTime bookExpiredDate = LocalDateTime.now().minusMinutes(2);

@@ -8,8 +8,8 @@ import java.util.List;
 import com.hcl.booklendingsystem.dto.GetBooksOutput;
 
 public interface BookService {
-	public List<GetBooksOutput> getBooks(Integer pageNumber);
 	public CommonResponse addBook(BookRequestDetails bookRequestDetails);
-	public  Optional<BookRequest> requestBook(Integer bookId, Integer userId);
+	public Optional<BookRequest> requestBook(Integer bookId, Integer userId);
+	public Optional<List<GetBooksOutput>>getBooks(String bookName,String authorName,Integer pageNumber);
 
 }

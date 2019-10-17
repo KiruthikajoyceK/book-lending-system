@@ -35,6 +35,7 @@ public class LoginController {
     @PostMapping(value = "/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
     	log.debug(BookLendingSystemConstants.LOGIN_DEBUG_END_CONTROLLER);
+    	log.info("inside login email:{} password:{}",loginRequest.getEmail(),loginRequest.getPassword());
     	 LoginResponse loginResponse=new LoginResponse();
         if (bindingResult.hasErrors()) {
         	throw new UserException(bindingResult.getFieldError().getField()+" "+bindingResult.getFieldError().getDefaultMessage());
