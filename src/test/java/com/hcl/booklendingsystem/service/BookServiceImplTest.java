@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -33,7 +35,13 @@ import com.hcl.booklendingsystem.repository.BookHistoryRepository;
 import com.hcl.booklendingsystem.repository.BookRepository;
 import com.hcl.booklendingsystem.repository.BookRequestRepository;
 import com.hcl.booklendingsystem.repository.UserRepository;
-
+/**
+ * 
+ * @author krithika
+ * @author sairam
+ * @author sreeshma
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class BookServiceImplTest {
 
@@ -105,15 +113,59 @@ public class BookServiceImplTest {
 		bookRequest.setUserId(1);
 		bookRequest.setBookRequestId(1);
 		bookRequest.setBookRequestDate(LocalDateTime.now());
+
 	}
 
-	/*
-	 * @Test public void testGetBooks() {
-	 * Mockito.when(bookRepository.findAll(paging)).thenReturn(Pagebooks);
-	 * Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(
-	 * Optional.of(author)); Assert.assertEquals(1,
-	 * bookServiceImpl.getBooks(0).size()); }
-	 */
+	@Test
+	public void testGetBooks() {
+//		Mockito.when(bookRepository.findAll(paging)).thenReturn(Pagebooks);
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+		Assert.assertEquals(0,
+				bookServiceImpl.getBooks(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()).get().size());
+	}
+
+	@Test
+	public void testGetBooks2() {
+		Pagebooks = new PageImpl<Book>(books);
+//		Mockito.when(bookRepository.findAll(paging)).thenReturn(Pagebooks);
+
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+		Mockito.when(bookRepository.searchBookByAuthorNameAndBookName("s", "j", paging)).thenReturn(books);
+//		Mockito.when(bookRepository.searchBookByAuthorNameOrBookName("s", "j", paging)).thenReturn(books);
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+
+		Assert.assertEquals(1, bookServiceImpl.getBooks("s", "j", 0).get().size());
+	}
+
+	@Test
+	public void testGetBooks3() {
+		Pagebooks = new PageImpl<Book>(books);
+//		Mockito.doNothing().when(bookRepository.findAll(paging));
+		Mockito.when(bookRepository.findAll(paging)).thenReturn(Pagebooks);
+
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+//		Mockito.when(bookRepository.searchBookByAuthorNameAndBookName(null, null, paging)).thenReturn(books);
+//		Mockito.when(bookRepository.searchBookByAuthorNameOrBookName(null, null, paging)).thenReturn(books);
+
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+
+		Assert.assertEquals(1, bookServiceImpl.getBooks(null, null, 0).get().size());
+	}
+
+	@Test
+	public void testGetBooks4() {
+		Pagebooks = new PageImpl<Book>(books);
+//		Mockito.doNothing().when(bookRepository.findAll(paging));
+//		Mockito.when(bookRepository.findAll(paging)).thenReturn(Pagebooks);
+
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+//		Mockito.when(bookRepository.searchBookByAuthorNameAndBookName(null, "j", paging)).thenReturn(books);
+		Mockito.when(bookRepository.searchBookByAuthorNameOrBookName(null, "j", paging)).thenReturn(books);
+
+//		Mockito.when(authorRepository.findById(book.getAuthorId())).thenReturn(Optional.of(author));
+
+		Assert.assertEquals(1, bookServiceImpl.getBooks(null, "j", 0).get().size());
+	}
 
 	@Test
 	public void testAddBookAuthorExist() {
